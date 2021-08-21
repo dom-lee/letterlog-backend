@@ -44,7 +44,7 @@ class CollectionAuthentication(authentication.BaseAuthentication):
         if postbox is None:
             raise exceptions.NotFound('Postbox Not Found')
 
-        if postbox.send_at < timezone.localtime().date():
+        if postbox.send_at > timezone.localtime().date():
             raise exceptions.NotAcceptable("It's Not time yet")
 
         if not postbox.is_public:
