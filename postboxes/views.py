@@ -12,7 +12,7 @@ from postboxes.serializers import (
     PostboxAccessSerializer,
     LetterCreateSerializer,
     LetterListSerializer,
-    CollectionAccessSerializer
+    UUIDcheckSerializer
 )
 from postboxes.authentication import PostboxAuthentication, CollectionAuthentication
 
@@ -59,15 +59,15 @@ class CollectionAPIView(ListAPIView):
     ordering = ['-created_at']
 
     def get_queryset(self):
-        uuid = self.request.GET.get('uuid')
+        uuid = self.request.GET.get('uuid', None)
 
         q = Q(postbox__uuid=uuid)
 
         return Letter.objects.filter(q)
 
-class CollectionAccessAPIView(APIView):
+class UUIDcheckAPIView(APIView):
     def post(self, request):
-        serializer = CollectionAccessSerializer(data=request.data)
+        serializer = UUIDcheckSerializer(data=request.data)
 
         if serializer.is_valid():
             return Response(serializer.data)

@@ -4,6 +4,7 @@ from datetime   import timedelta
 
 from django.contrib.auth.hashers             import make_password, check_password
 from django.contrib.auth.password_validation import MinimumLengthValidator
+from django.db.models.fields import CharField
 from django.utils                            import timezone
 from django.db                               import transaction
 
@@ -126,30 +127,22 @@ class LetterCreateSerializer(ModelSerializer):
 
         return letter
 
-class CollectionAccessSerializer(ModelSerializer):
-    uuid = UUIDField(write_only=True)
+class UUIDcheckSerializer(ModelSerializer):
+    uuid = UUIDField()
 
     class Meta:
         model = Postbox
-        fields = ['uuid', 'password', 'token']
-        read_only_fields = ['token']
-        extra_kwargs = {
-            'password' : {'write_only': True}
-        }
-
+        fields = ['id', 'uuid', 'is_public']
+        read_only_fields = ['id', 'is_public']
+        
     def validate(self, data):
         postbox = Postbox.objects.filter(uuid=data.get('uuid')).first()
 
         if postbox is None:
             raise ValidationError("Collection Not Found")
 
-        if postbox.is_public:
-            raise ValidationError("Collection is Public")
-
-        if not check_password(data.get('password'), postbox.password):
-            raise AuthenticationFailed("Wrong Password")
-
-        data['token'] = postbox.token
+        data['id'] = postbox.pk
+        data['is_public'] = postbox.is_public
 
         return data
 

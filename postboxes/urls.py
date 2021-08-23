@@ -5,7 +5,7 @@ from postboxes.views    import (
     PostboxAccessAPIView,
     SendLetterAPIView,
     CollectionAPIView,
-    CollectionAccessAPIView
+    UUIDcheckAPIView
 )
 
 app_name = 'postboxes'
@@ -15,5 +15,5 @@ urlpatterns = [
     path('/access'                , PostboxAccessAPIView.as_view()),
     path('/<int:postbox_id>/send' , SendLetterAPIView.as_view()),
     path('/collection'            , CollectionAPIView.as_view()),
-    path('/collection/access'     , CollectionAccessAPIView.as_view())
+    path('/uuid'                  , UUIDcheckAPIView.as_view())
 ]
